@@ -1,0 +1,750 @@
+// DOM Ready
+jQuery(document).ready(function ($) {
+  // Responsive Projects, iPhone/iPad URL bar hides itself on pageload
+  if (navigator.userAgent.indexOf("iPhone") != -1) {
+    addEventListener(
+      "load",
+      function () {
+        setTimeout(hideURLbar, 0);
+      },
+      false
+    );
+  }
+
+  function hideURLbar() {
+    window.scrollTo(0, 0);
+  }
+
+  /*
+   *
+   * Anqor links
+   *
+   * */
+  $('a[href*="#"]').on("click", function (e) {
+    var hash = this.hash;
+
+    if (hash) {
+      var target = $(hash);
+      if (target.length) {
+        e.preventDefault(); // Only block if we have a match
+        $("html, body").animate({ scrollTop: target.offset().top - 80 }, 600);
+      }
+      // If the target is not found → do nothing → default behavior happens
+    }
+  });
+
+  /*
+   *
+   * Anqor links on page load
+   *
+   * */
+  if (window.location.hash) {
+    var target = $(window.location.hash);
+    if (target.length) {
+      $("html, body").animate({ scrollTop: target.offset().top - 80 }, 600);
+    }
+  }
+
+  /*
+   *
+   * Read more on CAR DETAILS
+   *
+   * */
+  document.querySelectorAll(".read-more").forEach(function (link) {
+    link.addEventListener("click", function (e) {
+      e.preventDefault();
+      this.previousElementSibling.style.display = "inline";
+      this.style.display = "none";
+    });
+  });
+
+  /*
+   *
+   * Front page from-to select2 and select change
+   *
+   */
+  let isChanging = false;
+
+  // Initialize Select2
+  $(".main-search-container select").each(function () {
+    let noResultsMsg =
+      $(this).attr("id") === "from"
+        ? "Please choose one of the options listed here! If you don't choose a starting point or it's not listed, you won't find a travel option! In this case, please write us a message using the contact menu and we will get back to you as soon as possible! <a href='/contact'>Contact</a>"
+        : "Please choose one of the options listed here! If you do not select an arrival point or it is not listed, you will not find a travel option! In this case, please send us a message using the contact menu item and we will contact you as soon as possible! <a href='/contact'>Contact</a>";
+
+    $(this)
+      .select2({
+        dropdownParent: $("body"),
+        width: "resolve",
+        language: {
+          noResults: function () {
+            return noResultsMsg;
+          },
+        },
+        escapeMarkup: function (markup) {
+          return markup;
+        },
+      })
+      .on("select2:open", function () {
+        document.activeElement.blur();
+      });
+  });
+
+  // --- Prevent selecting the same option in from and to select ---
+  $("#from, #to").on("change", function () {
+    const fromVal = $("#from").val();
+    const toVal = $("#to").val();
+
+    // Enable all options first
+    $("#from option, #to option").prop("disabled", false);
+
+    // Disable the selected value of the other select
+    if (fromVal) {
+      $("#to option[value='" + fromVal + "']").prop("disabled", true);
+    }
+    if (toVal) {
+      $("#from option[value='" + toVal + "']").prop("disabled", true);
+    }
+
+    // Refresh Select2 to reflect disabled state
+    $("#from, #to").trigger("change.select2");
+  });
+
+  // Helper: Get URL parameter
+  function getUrlParam(param) {
+    const url = new URL(window.location.href);
+    return url.searchParams.get(param)?.replace(/\/$/, "").toLowerCase(); // remove trailing slash
+  }
+
+  // Set the other field to "Budapest"
+  function setOtherToBudapest(changedId) {
+    if (isChanging) return;
+
+    const otherId = changedId === "from" ? "to" : "from";
+    const $other = $("#" + otherId);
+    const exists = $other.find('option[value="Budapest"]').length > 0;
+
+    if (exists) {
+      isChanging = true;
+      $other.val("Budapest").trigger("change");
+      isChanging = false;
+    }
+  }
+
+  // Handle manual selection
+  $("#from").on("change", function () {
+    if ($(this).val() !== "Budapest") {
+      setOtherToBudapest("from");
+    }
+  });
+
+  $("#to").on("change", function () {
+    if ($(this).val() !== "Budapest") {
+      setOtherToBudapest("to");
+    }
+  });
+
+  // Auto-set based on URL params
+  const urlFrom = getUrlParam("from");
+  const urlTo = getUrlParam("to");
+
+  if (urlFrom) {
+    const $fromOption = $("#from option").filter(function () {
+      return $(this).val().replace(/\s+/g, "-").toLowerCase() === urlFrom;
+    });
+
+    if ($fromOption.length) {
+      $("#from").val($fromOption.val()).trigger("change");
+    }
+  }
+
+  if (urlTo) {
+    const $toOption = $("#to option").filter(function () {
+      return $(this).val().replace(/\s+/g, "-").toLowerCase() === urlTo;
+    });
+
+    if ($toOption.length) {
+      $("#to").val($toOption.val()).trigger("change");
+    }
+  }
+
+  // If only one of them is set, force the other to Budapest
+  if (urlFrom && !urlTo) {
+    setOtherToBudapest("from");
+  }
+
+  if (urlTo && !urlFrom) {
+    setOtherToBudapest("to");
+  }
+
+  /*
+   *
+   * Trip price növelés - csökkentés
+   *
+   */
+  $(".trip-item-inner").each(function () {
+    const $trip = $(this);
+    const basePrice = parseInt($trip.data("price-hour"));
+    let currentTime = 60;
+
+    const $priceDisplay = $trip.find(".trip-price");
+    const $timeDisplay = $trip.find(".trip-price-time");
+
+    function updateDisplay(newTime) {
+      currentTime = newTime;
+      let newPrice = Math.round((basePrice / 60) * currentTime);
+
+      $timeDisplay.text(currentTime);
+      $priceDisplay.text(newPrice);
+
+      // ✅ Set the actual HTML attributes:
+      $trip.attr("data-price-actual", newPrice);
+      $trip.attr("data-time-actual", newTime);
+    }
+
+    $trip.find(".trip-price-minus").click(function () {
+      if (currentTime > 30) {
+        updateDisplay(currentTime - 10);
+      }
+    });
+
+    $trip.find(".trip-price-plus").click(function () {
+      if (currentTime < 240) {
+        updateDisplay(currentTime + 10);
+      }
+    });
+  });
+
+  /*
+   *
+   * More trips / more stops
+   *
+   */
+  if ($("#more-trips-btn").length > 0 && $("#more-trips").length > 0) {
+    const $more_trips_btn = $("#more-trips-btn");
+    const $more_trips = $("#more-trips");
+
+    $more_trips_btn.on("click", function () {
+      $more_trips_btn.hide();
+      $more_trips.fadeIn(400, function () {
+        $("html, body").animate(
+          {
+            scrollTop: $more_trips.offset().top,
+          },
+          600
+        );
+      });
+    });
+  }
+
+  /*
+   *
+   * Country selector
+   *
+   */
+  $(".country-item").on("click", function () {
+    let selected = $(this).data("filter");
+
+    // Update active class
+    $(".country-item").removeClass("active");
+    $(this).addClass("active");
+
+    // Show/Hide destinations
+    if (selected === "all") {
+      $(".trip-box").show();
+    } else {
+      $(".trip-box").hide();
+      $(`.trip-box[data-country*="${selected}"]`).show();
+    }
+  });
+
+  /*
+   *
+   * Country carousel
+   *
+   */
+  if ($(".country-slider").length > 0) {
+    const swiper = new Swiper(".country-slider", {
+      slidesPerView: 2,
+      spaceBetween: 15,
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+      },
+      breakpoints: {
+        576: {
+          slidesPerView: 3,
+        },
+        768: {
+          slidesPerView: 4,
+        },
+        992: {
+          slidesPerView: 5,
+        },
+        1200: {
+          slidesPerView: 6,
+        },
+      },
+      /*on: {
+        init: function () {
+          // Find the first country filter
+          const firstSlide = document.querySelector(
+            ".country-slider .swiper-slide .country-item"
+          );
+          if (!firstSlide) return;
+
+          const filter = firstSlide.getAttribute("data-filter");
+
+          // Hide all trip-boxes
+          document.querySelectorAll(".trip-box").forEach((el) => {
+            el.style.display = "none";
+          });
+
+          // Show only matching trip-boxes
+          document.querySelectorAll(".trip-box").forEach((el) => {
+            const countries = el.getAttribute("data-country");
+            if (countries && countries.split(" ").includes(filter)) {
+              el.style.display = "";
+            }
+          });
+        },
+      },*/
+    });
+  }
+
+  $(".up-button").click(function () {
+    $("html, body").animate({ scrollTop: 0 }, "slow");
+    return false;
+  });
+
+  $(".wpcf7-submit").each(function () {
+    $(this).addClass("green-btn");
+  });
+
+  /*
+   *
+   * Extra trips stored and visualized in the footer
+   *
+   */
+  function setCookie(name, value, days) {
+    let expires = "";
+    if (days) {
+      const date = new Date();
+      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+      expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie =
+      name + "=" + encodeURIComponent(value) + expires + "; path=/";
+  }
+
+  function deleteCookie(name) {
+    setCookie(name, "", -1);
+  }
+
+  function getCookie(name) {
+    let match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+    return match ? decodeURIComponent(match[2]) : null;
+  }
+
+  let trips = getCookie("selectedTrips")
+    ? JSON.parse(getCookie("selectedTrips"))
+    : [];
+
+  function saveTrips() {
+    setCookie("selectedTrips", JSON.stringify(trips), 7); // store for 7 days
+  }
+
+  function renderTripBar() {
+    let $tripItems = $("#trip-bar-items");
+    let $addedStops = $("#added-stops");
+    let $finalPrice = $("#final-price");
+    let $finalTextAfterCar = $("#final-text-after-car");
+    let $hiddenTripsInput = $("input[name='trips']");
+    let $hiddenFinalPriceInput = $("input[name='finalprice']");
+
+    // Don't draw it on thank you page
+    if ($("body.page-template-page-thank-you").length > 0) {
+      deleteCookie("selectedTrips");
+      return;
+    }
+
+    $tripItems.empty();
+    $addedStops.empty();
+
+    let availableTrips = null;
+
+    // Only check available trips if #added-stops exists
+    if ($addedStops.length) {
+      availableTrips = $addedStops.data("available-trips");
+      if (!Array.isArray(availableTrips)) {
+        console.warn("No valid available trips found.");
+        availableTrips = null;
+      }
+    }
+
+    let totalTripPrice = 0;
+    let selectedTrips = [];
+
+    if (Array.isArray(trips)) {
+      trips.forEach((trip, index) => {
+        if (availableTrips) {
+          let matchedTrip = availableTrips.find(
+            (avail) => avail.title === trip.title
+          );
+          if (!matchedTrip) return;
+        }
+
+        let tripHtml = `
+          <span class="footer-tripitem">
+            ${trip.title} - ${trip.price}€ / ${trip.time} min
+            <button class="trip-remove" data-index="${index}">
+              <span class="material-icons">close</span>
+            </button>
+          </span>
+        `;
+
+        $tripItems.append(tripHtml);
+        $addedStops.append(tripHtml);
+
+        totalTripPrice += parseFloat(trip.price);
+
+        selectedTrips.push({
+          title: trip.title,
+          price: trip.price,
+          time: trip.time,
+        });
+      });
+    }
+
+    // Always calculate final price (even if no trips)
+    let selectedCar = $('input[name="chosen_car"]:checked');
+    let carPrice = selectedCar.length
+      ? parseFloat(selectedCar.data("price"))
+      : 0;
+    let finalPrice = totalTripPrice + carPrice;
+    let finalTextAfterPrice = selectedCar.data("car-aftertext");
+
+    // Update visible final price
+    $finalPrice.text(`${finalPrice}`);
+    $finalTextAfterCar.text(`${finalTextAfterPrice}`);
+
+    // Update hidden fields
+    if ($hiddenTripsInput.length) {
+      $hiddenTripsInput.val(JSON.stringify(selectedTrips));
+    }
+
+    if ($hiddenFinalPriceInput.length) {
+      $hiddenFinalPriceInput.val(finalPrice);
+    }
+
+    // Show or hide the trip bar based on whether there are trip items
+    if ($tripItems.children().length > 0) {
+      $("#trip-bar").show();
+    } else {
+      $("#trip-bar").hide();
+    }
+  }
+
+  // Update cookie when item removed
+  $(document).on("click", ".trip-remove", function () {
+    let index = $(this).data("index");
+    trips.splice(index, 1);
+    saveTrips();
+    renderTripBar();
+  });
+
+  // Update cookie when item removed
+  $(document).on("click", ".trip-remove", function () {
+    let index = $(this).data("index");
+    trips.splice(index, 1);
+    saveTrips();
+    renderTripBar();
+  });
+
+  // Add trip
+  $(".trip-btn1").on("click", function () {
+    let tripEl = $(this).closest(".trip-item-inner");
+    let title = tripEl.data("title");
+    let price = tripEl.attr("data-price-actual");
+    let time = tripEl.attr("data-time-actual");
+
+    if (!trips.some((t) => t.title === title)) {
+      trips.push({ title, price, time });
+      saveTrips();
+      renderTripBar();
+    } else {
+      alert(`"${title}" is already added.`);
+    }
+  });
+
+  renderTripBar();
+
+  /*
+   *
+   * Datepicker initial
+   *
+   */
+  if ($("#departure").length > 0) {
+    $("#departure").datetimepicker({
+      minDate: 0,
+      onShow: function (ct) {
+        this.setOptions({
+          format: "Y-m-d H:i",
+          minDate: 0,
+          minTime:
+            new Date().toDateString() === ct.toDateString()
+              ? new Date().getHours() + ":00"
+              : false,
+        });
+      },
+      onSelectDate: function (ct) {
+        const now = new Date();
+        this.setOptions({
+          minTime:
+            ct.toDateString() === now.toDateString()
+              ? now.getHours() + ":" + now.getMinutes()
+              : false,
+        });
+      },
+    });
+  }
+
+  if ($("#pickuptime").length > 0) {
+    $("#pickuptime").datetimepicker({
+      minDate: 0,
+      onShow: function (ct) {
+        this.setOptions({
+          format: "Y-m-d H:i",
+          minDate: 0,
+          minTime:
+            new Date().toDateString() === ct.toDateString()
+              ? new Date().getHours() + ":00"
+              : false,
+        });
+      },
+      onSelectDate: function (ct) {
+        const now = new Date();
+        this.setOptions({
+          minTime:
+            ct.toDateString() === now.toDateString()
+              ? now.getHours() + ":" + now.getMinutes()
+              : false,
+        });
+      },
+    });
+  }
+
+  /*
+   *
+   * Car choosing
+   *
+   */
+  $("section.choose-car .car-item input").on("change", function () {
+    if ($(this).is(":checked")) {
+      chosen_id = $(this).attr("id");
+      chosen_name = $(this).data("car-name");
+      chosen_text_after_price = $(this).data("car-aftertext");
+      $(".chosen-car .car-item").hide();
+      $(".chosen-car .car-item[data-car-item=" + chosen_id + "]").show();
+      $("input[name='car-type']").val(chosen_name);
+      $("input[name='text-after-price']").val(chosen_text_after_price);
+      $("#final-text-after-car").text(chosen_text_after_price);
+    }
+    renderTripBar();
+  });
+
+  /*
+   *
+   * Car choosing steps
+   *
+   */
+  $("#step1").on("click", function () {
+    const $sum_trip_step1 = $("#sum_trip_step1");
+    const $sum_trip_step2 = $("#sum_trip_step2");
+
+    $sum_trip_step1.fadeOut(400, function () {
+      $sum_trip_step2.fadeIn(400, function () {
+        $("html, body").animate(
+          {
+            scrollTop: $sum_trip_step2.offset().top,
+          },
+          600
+        );
+      });
+    });
+  });
+  $("#back1").on("click", function () {
+    const $sum_trip_step1 = $("#sum_trip_step1");
+    const $sum_trip_step2 = $("#sum_trip_step2");
+
+    $sum_trip_step2.fadeOut(400, function () {
+      $sum_trip_step1.fadeIn(400, function () {
+        $("html, body").animate(
+          {
+            scrollTop: $sum_trip_step1.offset().top,
+          },
+          600
+        );
+      });
+    });
+  });
+  $("#step2").on("click", function () {
+    $(".final-price").addClass("laststep");
+    $("section.trips").hide();
+    $("#contact-infos").fadeIn(400, function () {
+      $("html, body").animate(
+        {
+          scrollTop: $(".final-price").offset().top,
+        },
+        600
+      );
+    });
+  });
+  $("#back2").on("click", function () {
+    $(".final-price").removeClass("laststep");
+    $("#contact-infos").fadeOut(400, function () {
+      $("section.trips").fadeIn(400, function () {
+        $("html, body").animate(
+          {
+            scrollTop: $(".final-price").offset().top,
+          },
+          600
+        );
+      });
+    });
+  });
+
+  /*
+   *
+   * fill data on Thank you page
+   *
+   */
+  if (typeof submissionData !== "undefined") {
+    fillAndSubmitCF7Form(submissionData);
+  }
+
+  /*
+   *
+   * DAYTRIP MODAL AND SUMMIT
+   *
+   */
+  $("a.green-btn[href='/contact']").on("click", function (e) {
+    e.preventDefault();
+
+    var $btn = $(this);
+    var $section = $btn.closest("section"); // limit search inside the section
+
+    // Find closest h1 above the button
+    var h1 = $btn.closest("p").prevAll("h1").first().text().trim();
+    if (!h1) {
+      h1 = $section.find("h1").first().text().trim() || "Unknown Destination";
+    }
+
+    // Find closest h3 above the button
+    var h3 = $btn.closest("p").prevAll("h3").first().text().trim();
+    if (!h3) h3 = "";
+
+    // Strip HTML tags (like <strong> or <em>)
+    h1 = $("<div>").html(h1).text();
+    h3 = $("<div>").html(h3).text();
+
+    // Combine for destination field
+    var destinationText = h1;
+    if (h3) destinationText += " – " + h3;
+
+    // Fill modal input
+    $("#destination").val(destinationText);
+
+    // Show modal
+    $("#tripModal").modal("show");
+  });
+
+
+  /* ------------------------------------
+   * Bestday4you redirect modal
+   * ------------------------------------ */
+  //$(window).on('load', function () {
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const refer = urlParams.get('refer');
+
+    if (refer === 'bestday4you') {
+      $('#bestdayModal').modal('show');
+    }
+
+  //});
+
+
+});
+
+function fillAndSubmitCF7Form(submissionData, formSelector = ".wpcf7-form") {
+  const $form = jQuery(formSelector);
+
+  if (!$form.length) return;
+
+  // Fill matching fields
+  jQuery.each(submissionData, function (key, value) {
+    const $field = $form.find(`[name="${key}"]`);
+    if ($field.length) {
+      if ($field.is("input, textarea")) {
+        $field.val(value);
+      }
+    }
+  });
+
+  // Submit the form
+  $form.submit();
+}
+
+/*
+ *
+ * Google map init to Choose-car template
+ *
+ */
+function initMap() {
+  const directionsService = new google.maps.DirectionsService();
+  const directionsRenderer = new google.maps.DirectionsRenderer();
+
+  const map = new google.maps.Map(document.getElementById("map"), {
+    zoom: 7,
+    center: { lat: 48.21019, lng: 16.33043 }, // Centered on Vienna
+  });
+
+  directionsRenderer.setMap(map);
+
+  let destination_to_passed_to_Maps = destination_to;
+  let destination_from_passed_to_Maps = destination_from;
+  if (destination_to_passed_to_Maps == "Baja") {
+    destination_to_passed_to_Maps = "Baja, Hungary";
+  }
+
+  if (destination_from_passed_to_Maps == "Baja") {
+    destination_from_passed_to_Maps = "Baja, Hungary";
+  }
+
+  const request = {
+    origin: destination_from_passed_to_Maps,
+    destination: destination_to_passed_to_Maps,
+    /*waypoints: [
+      {
+        location: "Philadelphia, PA",
+        stopover: true,
+      },
+    ],*/
+    travelMode: google.maps.TravelMode.DRIVING,
+  };
+
+  directionsService.route(request, (result, status) => {
+    if (status === "OK") {
+      directionsRenderer.setDirections(result);
+
+      const route = result.routes[0].legs[0]; // first leg of the first route
+      const distance = route.distance.text; // e.g. "250 km"
+      const duration = route.duration.text; // e.g. "2 hours 45 mins"
+
+      // Example: show inside an element
+      document.getElementById("route-info").innerHTML =
+        "Distance: " + distance + " | Duration: " + duration;
+    }
+  });
+}

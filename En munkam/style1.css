@@ -23,17 +23,28 @@ body {
 .card {
     margin: auto;
     border: 2px darkgrey solid;
-    margin-bottom: 30px;
+    margin-bottom:15px ;
+    margin-top:15px;
 }
 .card-body{
     background-color: lightslategray;
 
 }
 footer{
-    background-color: black;
-    color: white;
+    background-color: white;
+    color: black;
     padding-left: 50px;
-    
-    row-gap: 1;
-    height: 100px;
+    text-decoration: none;
+    height: 300px;
+    width: 100%;
+}
+footer a{
+    text-decoration: none;
+    color: black;
+
+}
+footer img{
+    max-width: 250px;
+    max-height: 100px;
+    margin-right: 530px;
 }

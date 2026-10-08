@@ -15,9 +15,16 @@
     transform: translate(-50%, -50%);
     text-align: center;
     color:gold;
+    
 }
 body {
     background-color: rgb(193,198,179)
 
 }
 
+.carousel {
+   
+    max-width: 90%;
+    margin: auto;
+     margin-top: 30px;
+}

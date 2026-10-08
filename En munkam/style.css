@@ -1,7 +1,7 @@
 .iconkep img{
     max-width: 250px;
     max-height: 100px;
-    margin-right: 450px;
+    margin-right: 530px;
 }
 .carousel-item img {
     height: 420px;
@@ -16,3 +16,8 @@
     text-align: center;
     color:gold;
 }
+body {
+    background-color: rgb(193,198,179)
+
+}
+

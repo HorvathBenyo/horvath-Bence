@@ -1,0 +1,39 @@
+.iconkep img{
+    max-width: 250px;
+    max-height: 100px;
+    margin-right: 530px;
+}
+.carousel-item img {
+    height: 420px;
+    object-fit: cover;
+}
+.carousel-caption {
+    font-size: 30px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color:gold;
+}
+body {
+    background-color: rgb(193,198,179)
+
+}
+.card {
+    margin: auto;
+    border: 2px darkgrey solid;
+    margin-bottom: 30px;
+}
+.card-body{
+    background-color: lightslategray;
+
+}
+footer{
+    background-color: black;
+    color: white;
+    padding-left: 50px;
+    
+    row-gap: 1;
+    height: 100px;
+}

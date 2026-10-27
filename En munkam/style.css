@@ -1,77 +1,429 @@
 .iconkep img {
-  max-width: 250px;
+  display: block;
+  width: min(250px, 55vw);
   max-height: 100px;
-  
 }
-.navbar-brand{
-  margin-left: 530px;
+
+.navbar-brand {
+  margin-left: auto;
+  margin-right: 1rem;
 }
-.carousel-item img {
-  height: 420px;
-  object-fit: cover;
-}
-.carousel-caption {
-  font-size: 30px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  color: gold;
-}
+
 body {
   background-color: rgb(188, 198, 179);
 }
 
 .carousel {
-  max-width: 90%;
-  margin: auto;
-  margin-top: 30px;
-}
-.feketecucc {
+  position: relative;
   width: 100%;
-  height: 700px;
-}
-.feketecucc h1 p {
-  margin-left: 40px;
-  width: 800px;
-
-}
-.feketecucc h1 {
-  padding-top: 30px;
-}
-.feketecucc img{
-  float: right;
-  border-radius: 26px;
-  margin-right: 150px;
-  margin-top: 80px;
+  margin: 30px auto 0;
+  overflow: hidden;
 }
 
-.jovo {
-  max-width: 90%;
-  margin: auto;
+.carousel-item {
+  position: relative;
+}
+
+.carousel-item img {
+  height: clamp(360px, 42vw, 560px);
+  object-fit: cover;
+  filter: brightness(0.9);
 }
 
 .carousel-caption {
+  font-size: 30px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: gold;
   background-color: rgba(10, 10, 10, 0.568);
-  padding: 40px;
+  width: max-content;
+  max-width: min(80%, 900px);
+  padding: 40px 56px;
   box-shadow: 0px 0px 61px 21px rgba(0, 0, 0, 0.49);
   -webkit-box-shadow: 0px 0px 61px 21px rgba(0, 0, 0, 0.49);
+  z-index: 1;
 }
+
+.carousel-caption h1 {
+  font-size: clamp(1.7rem, 4vw, 3rem);
+}
+
+.carousel-caption p {
+  margin-bottom: 0;
+  font-size: clamp(1rem, 2vw, 1.5rem);
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 1;
+}
+
+.carousel-control-prev {
+  left: 18px;
+}
+
+.carousel-control-next {
+  right: 18px;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.35));
+}
+
+.booking-widget {
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  width: min(70%, 900px);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(31, 31, 31, 0.08);
+  border-radius: 26px;
+  padding: 8px 10px 8px 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16);
+  backdrop-filter: blur(2px);
+  z-index: 2;
+}
+
+.booking-field {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex: 1;
+  min-width: 0;
+  color: #1d3d33;
+  font-weight: 600;
+  padding: 2px 8px 2px 0;
+  border-right: 1px solid rgba(22, 38, 32, 0.12);
+}
+
+.booking-field.compact {
+  flex: 0.5;
+}
+
+.booking-field:last-of-type {
+  border-right: none;
+}
+
+.booking-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: #2bb673;
+}
+
+.booking-icon svg {
+  width: 19px;
+  height: 19px;
+  fill: currentColor;
+}
+
+.booking-label {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  font-size: clamp(0.8rem, 1vw, 1.25rem);
+  font-weight: inherit;
+  letter-spacing: -0.02em;
+}
+
+.booking-label:focus {
+  box-shadow: 0 1px 0 #2bb673;
+}
+
+.booking-label::placeholder {
+  color: #1d3d33;
+  opacity: 1;
+}
+
+.booking-label[type="number"] {
+  width: 2.5em;
+}
+
+.booking-label[type="date"] {
+  font-size: clamp(0.72rem, 0.9vw, 1.1rem);
+}
+
+.booking-field:focus-within {
+  color: #1d3d33;
+}
+
+.booking-button {
+  border: none;
+  background: linear-gradient(135deg, #6bc8d7, #3bb7c9);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: clamp(0.8rem, 1vw, 1.2rem);
+  padding: 10px 16px;
+  border-radius: 16px;
+  min-width: 145px;
+  box-shadow: 0 8px 22px rgba(59, 183, 201, 0.32);
+}
+
+.feketecucc {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 420px;
+  height: auto;
+  padding: 30px 40px;
+  overflow: hidden;
+}
+
+.feketecucc > h1,
+.feketecucc > p {
+  max-width: 52%;
+  margin-left: 0;
+}
+
+.feketecucc h1 {
+  padding-top: 0;
+}
+
+.feketecucc img {
+  float: right;
+  display: block;
+  max-width: 42%;
+  height: auto;
+  border-radius: 26px;
+  margin: 30px 0 24px 32px;
+}
+
+.jovo {
+  max-width: 1200px;
+  margin: auto;
+  padding: 32px 5%;
+}
+
 footer {
+  box-sizing: border-box;
   background-color: white;
   color: black;
-  padding-left: 50px;
+  padding: 32px 5%;
   text-decoration: none;
-  height: 300px;
+  min-height: 300px;
+  height: auto;
   width: 100%;
 }
+
 footer a {
   text-decoration: none;
   color: black;
 }
+
 footer img {
   max-width: 250px;
+  width: 100%;
   max-height: 100px;
-  margin-right: 530px;
+  height: auto;
+  margin: 0 0 24px;
+}
+
+@media (max-width: 900px) {
+  .carousel-caption {
+    top: 24%;
+  }
+
+  .booking-widget {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px 12px;
+    width: min(90%, 600px);
+    padding: 10px 12px;
+    bottom: 14px;
+  }
+
+  .booking-field,
+  .booking-field.compact {
+    min-width: 0;
+    padding-right: 10px;
+    border-right: none;
+  }
+
+  .booking-button {
+    grid-column: 1 / -1;
+  }
+
+  .booking-label[type="date"] {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .navbar {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .navbar .container-fluid {
+    padding: 0;
+  }
+
+  .navbar-brand {
+    margin-left: auto;
+    margin-right: 0.75rem;
+    font-size: 1rem;
+  }
+
+  .carousel {
+    margin-top: 12px;
+  }
+
+  .carousel-item img {
+    height: 700px;
+  }
+
+  .carousel-caption {
+    top: 18%;
+    width: calc(100% - 72px);
+    max-width: none;
+    padding: 20px 16px;
+  }
+
+  .carousel-caption h1 {
+    font-size: clamp(1.5rem, 7vw, 2rem);
+  }
+
+  .carousel-caption p {
+    font-size: 1rem;
+  }
+
+  .carousel-control-prev,
+  .carousel-control-next {
+    top: 34%;
+    width: 36px;
+    height: 36px;
+  }
+
+  .carousel-control-prev {
+    left: 8px;
+  }
+
+  .carousel-control-next {
+    right: 8px;
+  }
+
+  .booking-widget {
+    width: calc(100% - 24px);
+    max-width: 420px;
+    bottom: 12px;
+    gap: 6px 8px;
+    padding: 12px;
+    border-radius: 20px;
+  }
+
+  .booking-field,
+  .booking-field.compact {
+    gap: 5px;
+    padding: 4px 2px;
+    min-height: 40px;
+  }
+
+  .booking-icon {
+    flex: 0 0 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  .booking-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .booking-label {
+    font-size: 0.9rem;
+  }
+
+  .booking-label[type="number"] {
+    width: 100%;
+  }
+
+  .booking-label[type="date"] {
+    min-width: 0;
+    font-size: 0.78rem;
+  }
+
+  .booking-button {
+    min-height: 42px;
+    padding: 9px 12px;
+    font-size: 1rem;
+  }
+
+  .jovo {
+    padding: 24px 6%;
+  }
+
+  .feketecucc {
+    min-height: 0;
+    padding: 28px 6%;
+  }
+
+  .feketecucc img {
+    float: none;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto 24px;
+    border-radius: 16px;
+  }
+
+  .feketecucc > h1,
+  .feketecucc > p {
+    max-width: none;
+  }
+
+  .feketecucc > h1 {
+    font-size: clamp(1.8rem, 8vw, 2.4rem);
+  }
+
+  footer {
+    min-height: 0;
+    padding: 28px 6%;
+    overflow-wrap: anywhere;
+  }
+
+  footer h2 {
+    font-size: 1.5rem;
+  }
+
+  footer h4 {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .booking-widget {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .booking-button {
+    grid-column: 1;
+  }
+
+  .carousel-item img {
+    height: 820px;
+  }
+
+  .carousel-caption {
+    top: 12%;
+  }
 }

@@ -10,6 +10,7 @@ Egy utazás megtervezéséhez az utasnak meg kell adnia az indulási helyet, az 
 
 ## A megoldás
 
-A weboldal főoldalán egy foglalási űrlap segíti az utazás alapadatainak megadását. Az űrlap elküldése után egy e-mail-üzenet nyílik meg a megadott adatokkal, így az ügyfél egyszerűen felveheti a kapcsolatot a szolgáltatóval. Az országokat bemutató oldalon úti célokat, fényképeket és rövid leírásokat találhatnak az érdeklődők. A VIP-rész ismerteti a kényelmi szolgáltatásokat, például a frissítőket, az internetet és a rugalmas megállási lehetőséget.
+A főoldalon található űrlapon az utas megadhatja az utazás adatait. Az űrlap elküldése után e-mailt írhat a szolgáltatónak. Egy másik oldalon úti célok és rövid leírások láthatók, a VIP-rész pedig bemutatja a kényelmi szolgáltatásokat.
 
-A felület HTML, CSS és Bootstrap használatával készült, a foglalási űrlap működését pedig JavaScript egészíti ki. A reszponzív kialakításnak köszönhetően az oldal számítógépen és mobiltelefonon is használható. A cél egy áttekinthető, könnyen kezelhető weboldal, amely hasznos információkat nyújt, és megkönnyíti az érdeklődők kapcsolatfelvételét.
+Az oldal HTML, CSS és Bootstrap segítségével készült, az űrlaphoz JavaScriptet is használtam. A weboldal számítógépen és telefonon is használható.
+(a javascriptet csak az AI irta fogalmam sincs mit csinalt de jól néz ki szóval benne hagyom)

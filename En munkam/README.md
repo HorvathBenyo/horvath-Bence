@@ -4,6 +4,9 @@
 
 A projekt célja egy olyan weboldal készítése, amely bemutatja a Central Europe Transfer személyszállító szolgáltatását, és segít új ügyfeleket szerezni. Az oldal azoknak szól, akik kényelmesen, megbízható sofőrrel szeretnének utazni Magyarország és Közép-Európa különböző városai között.
 
+## Célok
+A cél az az volt hogy felmérjem a jelenlegi tudásom kisebb-nagyobb AI segitséggel, szerintem nagyrészt sikerült és ki tudok adni a kezemből valamit
+
 ## Az utasok igényei
 
 Egy utazás megtervezéséhez az utasnak meg kell adnia az indulási helyet, az úti célt, az utazás időpontját, valamint az utasok és a csomagok számát. Fontos az is, hogy előre tájékozódhasson a szolgáltatásról, az elérhető úti célokról és az utazás kényelmi lehetőségeiről.
